@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Hero } from '../components/Hero.jsx';
 import { SearchBar } from '../components/SearchBar.jsx';
 import { SortControls } from '../components/SortControls.jsx';
 import { ProjectGrid } from '../components/ProjectGrid.jsx';
@@ -68,9 +67,7 @@ export function Home() {
 
   return (
     <>
-      <Hero />
-
-      <main id="directory" className="mx-auto max-w-7xl scroll-mt-20 px-4 py-14 sm:px-6">
+      <main id="directory" className="mx-auto max-w-7xl scroll-mt-20 px-4 pb-14 pt-8 sm:px-6">
         {USE_MOCK && (
           <div className="mb-8 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-3 text-sm text-amber-800">
             <strong>Demo mode:</strong> showing local sample data. Connect Neon Postgres
