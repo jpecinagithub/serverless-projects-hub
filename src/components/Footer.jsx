@@ -72,7 +72,11 @@ export function Footer() {
         </div>
 
         <div className="mt-10 border-t border-zinc-200 pt-6 text-center text-xs text-zinc-400">
-          Built with React and serverless technologies.
+          Built with React and serverless technologies. Created by{' '}
+          <Link to="/about" className="font-medium text-zinc-500 hover:text-zinc-950">
+            Jon Peciña
+          </Link>
+          .
         </div>
       </div>
     </footer>

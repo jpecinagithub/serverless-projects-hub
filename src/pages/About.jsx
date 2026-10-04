@@ -52,6 +52,22 @@ export function About() {
           or abusive content). Contact emails submitted with projects are kept
           private and never displayed publicly.
         </p>
+        <h2 className="pt-2 text-xl font-bold text-zinc-950">Author</h2>
+        <p>
+          <strong className="text-zinc-900">Jon Peciña</strong> — Industrial
+          Engineer (UNAV) and Full-Stack Developer (React + Node.js +
+          PostgreSQL) working as an AI Engineer: building complete applications
+          accelerated by AI tools.
+        </p>
+        <p>
+          Contact:{' '}
+          <a
+            href="mailto:jpecina@gmail.com"
+            className="font-medium text-zinc-900 underline decoration-zinc-300 underline-offset-2 hover:text-zinc-600"
+          >
+            jpecina@gmail.com
+          </a>
+        </p>
       </div>
     </main>
   );
