@@ -61,11 +61,6 @@ export function Footer() {
                     Privacy
                   </Link>
                 </li>
-                <li>
-                  <Link to="/admin" className="text-zinc-600 hover:text-zinc-950">
-                    Admin
-                  </Link>
-                </li>
               </ul>
             </div>
           </nav>
