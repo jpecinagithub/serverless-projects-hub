@@ -191,7 +191,7 @@ export function ProjectDetail() {
                 href={project.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-zinc-950 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-zinc-950/15 transition-all hover:-translate-y-0.5 hover:bg-zinc-800"
+                className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-zinc-950 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-zinc-950/15 transition-all hover:-translate-y-0.5 hover:bg-zinc-800 sm:w-auto"
               >
                 Visit Project
                 <ExternalLink size={18} />

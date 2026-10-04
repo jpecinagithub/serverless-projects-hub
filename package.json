@@ -13,6 +13,7 @@
     "test:api": "node --import ./test/register-loader.mjs ./test/api.test.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.8.0",
     "@vercel/postgres": "^0.10.0",
     "file-type": "^22.1.1",
