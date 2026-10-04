@@ -10,6 +10,7 @@ import crypto from 'node:crypto';
 
 const COOKIE_NAME = 'sh_admin';
 const TOKEN_LABEL = 'serverless-hub-admin';
+const GHOST_LABEL = 'serverless-hub-ghost-link';
 
 function getSecret() {
   return process.env.ADMIN_SECRET || '';
@@ -43,6 +44,30 @@ export function verifyAdminSecret(candidate) {
   const a = Buffer.from(String(candidate ?? ''));
   const b = Buffer.from(getSecret());
   if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
+
+/**
+ * Ghost-link token: a capability URL for the site owner. Derived from
+ * ADMIN_SECRET with its own label, so it is unguessable without the secret
+ * and rotates automatically when the secret changes. The link is never
+ * rendered anywhere in the UI — only shown inside the admin dashboard.
+ */
+export function ghostToken() {
+  if (!adminConfigured()) return '';
+  return crypto
+    .createHmac('sha256', getSecret())
+    .update(GHOST_LABEL)
+    .digest('hex')
+    .slice(0, 32);
+}
+
+export function verifyGhostToken(candidate) {
+  const expected = ghostToken();
+  if (!expected) return false;
+  const a = Buffer.from(String(candidate ?? ''));
+  const b = Buffer.from(expected);
+  if (a.length === 0 || a.length !== b.length) return false;
   return crypto.timingSafeEqual(a, b);
 }
 

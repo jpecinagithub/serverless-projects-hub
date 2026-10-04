@@ -7,6 +7,7 @@ import { Home } from './pages/Home.jsx';
 import { ProjectDetail } from './pages/ProjectDetail.jsx';
 import { Submit } from './pages/Submit.jsx';
 import { Admin } from './pages/Admin.jsx';
+import { GhostAdmin } from './pages/GhostAdmin.jsx';
 import { About } from './pages/About.jsx';
 import { Privacy } from './pages/Privacy.jsx';
 
@@ -28,6 +29,8 @@ function Layout() {
           <Route path="/project/:id" element={<ProjectDetail />} />
           <Route path="/submit" element={<Submit />} />
           <Route path="/admin" element={<Admin />} />
+          {/* Ghost moderation link — not referenced anywhere in the UI. */}
+          <Route path="/g/:token" element={<GhostAdmin />} />
           <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<Navigate to="/" replace />} />

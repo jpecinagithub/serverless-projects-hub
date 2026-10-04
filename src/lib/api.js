@@ -80,4 +80,9 @@ export const api = USE_MOCK
 
       adminDeleteProject: (id) =>
         request(`/api/admin/projects/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+
+      ghostRedeem: (token) =>
+        request(`/api/ghost?token=${encodeURIComponent(token)}`),
+
+      ghostLink: () => request('/api/admin/ghost-link'),
     };

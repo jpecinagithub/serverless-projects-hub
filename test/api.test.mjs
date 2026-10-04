@@ -16,6 +16,8 @@ const { default: statsHandler } = await import('../api/admin/stats.js');
 const { default: adminListHandler } = await import('../api/admin/projects/index.js');
 const { default: adminItemHandler } = await import('../api/admin/projects/[id].js');
 const { default: healthHandler } = await import('../api/health.js');
+const { default: ghostHandler } = await import('../api/ghost.js');
+const { default: ghostLinkHandler } = await import('../api/admin/ghost-link.js');
 const pgStub = await import('./stubs/postgres.mjs');
 const blobStub = await import('./stubs/blob.mjs');
 const sharp = (await import('sharp')).default;
@@ -97,6 +99,14 @@ function adminCookie() {
     .update('serverless-hub-admin')
     .digest('hex');
   return `sh_admin=${token}`;
+}
+
+function expectedGhostToken() {
+  return crypto
+    .createHmac('sha256', process.env.ADMIN_SECRET)
+    .update('serverless-hub-ghost-link')
+    .digest('hex')
+    .slice(0, 32);
 }
 
 // ---------------------------------------------------------------------------
@@ -441,6 +451,51 @@ await test('GET /api/health — reports db status', async () => {
   await healthHandler(makeReq({ method: 'GET' }), res);
   assert(res.statusCode === 200, `got ${res.statusCode}`);
   assert(body(res).db === true, 'db not ok');
+});
+
+// ---------------------------------------------------------------------------
+// ghost link
+// ---------------------------------------------------------------------------
+await test('GET /api/ghost — wrong token is 404 and sets no cookie', async () => {
+  const res = makeRes();
+  const req = makeReq({ method: 'GET' });
+  req.url = '/api/ghost?token=wrong-token';
+  await ghostHandler(req, res);
+  assert(res.statusCode === 404, `got ${res.statusCode}`);
+  assert(!res.headers['set-cookie'], 'cookie should not be set');
+});
+
+await test('GET /api/ghost — correct token sets an admin cookie', async () => {
+  const res = makeRes();
+  const req = makeReq({ method: 'GET' });
+  req.url = `/api/ghost?token=${expectedGhostToken()}`;
+  await ghostHandler(req, res);
+  assert(res.statusCode === 200, `got ${res.statusCode}: ${res.body}`);
+  const cookie = res.headers['set-cookie'] || '';
+  assert(/HttpOnly/.test(cookie), `bad cookie: ${cookie}`);
+
+  // The ghost cookie must actually grant admin access.
+  const probe = makeRes();
+  await statsHandler(makeReq({ method: 'GET', headers: { cookie } }), probe);
+  assert(probe.statusCode === 200, `ghost cookie not admin: ${probe.statusCode}`);
+});
+
+await test('GET /api/admin/ghost-link — 401 anon, returns /g/ URL when admin', async () => {
+  const anon = makeRes();
+  await ghostLinkHandler(makeReq({ method: 'GET' }), anon);
+  assert(anon.statusCode === 401, `anon got ${anon.statusCode}`);
+
+  const authed = makeRes();
+  const req = makeReq({ method: 'GET', headers: { cookie: adminCookie() } });
+  req.url = '/api/admin/ghost-link';
+  req.headers.host = 'example.com';
+  await ghostLinkHandler(req, authed);
+  assert(authed.statusCode === 200, `authed got ${authed.statusCode}: ${authed.body}`);
+  const { url } = body(authed);
+  assert(
+    url === `https://example.com/g/${expectedGhostToken()}`,
+    `unexpected ghost url: ${url}`
+  );
 });
 
 // ---------------------------------------------------------------------------
